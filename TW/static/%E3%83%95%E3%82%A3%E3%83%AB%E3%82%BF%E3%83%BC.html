@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="generator" content="TiddlyWiki" />
+<meta name="tiddlywiki-version" content="5.1.19" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="format-detection" content="telephone=no">
+<link id="faviconLink" rel="shortcut icon" href="favicon.ico">
+<link rel="stylesheet" href="static.css">
+<title>フィルター: seed TW — TW5の色々</title>
+<meta name="author" content="seed">
+<meta name="description" content="TiddlyWikiの解説 フィルター">
+<meta name="robots" content="noarchive"> 
+<meta name="googlebot" content="noimageindex, noarchive">
+</head>
+<body class="tc-body">
+
+<section class="tc-story-river">
+<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists   tc-tagged-TW%E3%81%AE%E3%83%A1%E3%83%A2 " data-tags="TWのメモ" data-tiddler-title="フィルター"><div class="tc-tiddler-title">
+<div class="tc-titlebar">
+<span class="tc-tiddler-controls">
+<span class=" tc-reveal"><button aria-label="その他のコマンド" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="その他のコマンドを表示します"></button><div class=" tc-reveal" hidden="true"></div></span><span class=" tc-reveal"><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><span class=" tc-reveal"><button aria-label="情報" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Finfo" title="このtiddlerの情報を表示します">
+</button></span><span class=" tc-reveal" hidden="true"></span></span></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="編集" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="このtiddlerを編集します"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="閉じる" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="このtiddlerを閉じます"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span>
+</span>
+
+<span>
+
+<span class="tc-tiddler-title-icon" style="fill:;">
+
+</span>
+
+
+
+<h2 class="tc-title">
+フィルター
+</h2>
+
+</span>
+
+</div>
+
+<div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div>
+</div><div class=" tc-reveal" hidden="true"></div>
+<div class=" tc-reveal">
+<div class="tc-subtitle">
+<a class="tc-tiddlylink tc-tiddlylink-missing" href=".html">
+
+</a> 
+</div>
+</div>
+<div class=" tc-reveal">
+<div class="tc-tags-wrapper"><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:#333333;
+color:#333333;">
+ TWのメモ
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span></div>
+</div>
+
+<div class="tc-tiddler-body tc-reveal"><h3 class="">フィルターとは</h3><p>条件を指定して該当するTiddlerを検索したり、単純な文字列の処理など色んなことが出来る機能<br>単体でも使うし、変数に入れたりウィジェットに渡したりなど組み合わせても使う<br>色々やるのに避けて通れないが結構ややこしく数も多くて初心者が苦しむ原因になりがち<br><br>単純に結果を見るには<a class="tc-tiddlylink tc-tiddlylink-shadow" href="%2524%253A%252FAdvancedSearch.html">$:/AdvancedSearch</a>のフィルタ(Filter)に書いたりTiddlerの本文に<code>{{{フィルター}}}</code>という書式で書き込む方法などがある<br></p><h3 class="">オペレーターとは</h3><p>オペレーターとはフィルターにて使う色んな処理を行う機能で<code>[</code>と<code>]</code>の中で書く<br><code>[オペレーター]</code>のように<br><br>オペレーターは3つのブロックに別れており、<code>!(オペレーター名):(suffix)(parameter)</code>という書式です<br></p><table><tbody><tr class="evenRow"><td>!</td><td>オペレーターの効果を反転させる場合だけつける<br>ただし、実際の効果はオペレーターの仕様によるし、効果が無いオペレーターもある</td></tr><tr class="oddRow"><td>(オペレーター名)</td><td>オペレーターの名前</td></tr><tr class="evenRow"><td>(suffix)</td><td>オペレーターによって設定されている場合がある2つ目のパラメーター</td></tr><tr class="oddRow"><td>(parameter)</td><td>直接渡す<code>[値]</code>、TextReferenceで渡す<code>{TextReference}</code>、変数で渡す<code>&lt;変数名&gt;</code>の3種類書き方が存在する<br>もちろん囲むのに使っている文字は中で使うことができない<br>regexp[]のように値を渡すのに困るようなら他の2つで渡すようにする<br>他の場所と違って括弧が1個なことに注意</td></tr><tr class="evenRow"><td>(input)</td><td>書式には出てこないが、左のオペレーターの結果(output)が入力(input)となる<br>最初のオペレーターの入力はall[tiddlers]の結果と等価(多分)<br>一部のオペレーターは入力(input)を完全に無視する処理を行う<br>公式で<code>[regexp:op-input[ignored]]</code>を使うと調べられる(全部出るかは分からない)</td></tr></tbody></table><p>オペレーターは入力(input)をsuffixとparameterの指定に従って処理します<br>ただし上述したように一部に入力(input)を無視する物もあります<br><br>また、上述の形式とは少し異なる書き方もできるオペレーターも出てきました(search[])<br></p><h3 class="">オペレーターの組み合わせ</h3><p>オペレーターは<code>オペレーター名[]オペレーター名[]</code>のようにつなげて書くことで左から右の順にどんどん処理していくことができる<br>例えば下記のように書く<br></p><pre><code>[all[tiddlers]tag[TWのメモ]]</code></pre><h3 class="">1つの塊であるFilter Run</h3><p>上記<code>[オペレーター1つないし複数]</code>や、ただの文字列をダブルクォーテーションまたはシングルクォーテーションで囲んだ物、あるいはただの文字列(スペースや[]を含まない物)をrunと呼ぶ(公式のFilter Run)</p><h3 class="">更なる組み合わせ</h3><p>上記runを組み合わせて更に複雑なフィルターを作ることができる</p><table><tbody><tr class="evenRow"><td>run1 run2</td><td>run1の結果とrun2の結果のどちらかにある物/和集合(run1 or run2)</td></tr><tr class="oddRow"><td>run1 +run2</td><td>run1の結果とrun2の結果の両方にある物/共通部分(run1 and run2)<br>ただ実際にはrun1の結果をrun2に入力として渡して処理させている(多分)<br>なので共通部分になるかはrun2のオペレーターの仕様による</td></tr><tr class="evenRow"><td>run1 -run2</td><td>run1の結果にあってrun2の結果にない物/差集合(run1 and not run2)</td></tr><tr class="oddRow"><td>run1 ~run2</td><td>run1の結果が空のリスト(なし)だった時にrun2が結果になる。run1の結果が空のリストだったらrun2は結果に影響しない</td></tr></tbody></table><h3 class="">細かい話</h3><p><code>オペレーター名[]</code>において、オペレーター名は一致する物がなければfieldオペレーターに渡されたsuffix(フィールド名の指定)として扱われます<br>オペレーター名なしで[]とかかれた場合はtitleオペレーターと解釈されます<br>field:title[]とtitle[]は別物であることに注意<br><br>フィールドオペレーターの方は省略せずフィールドだと明示した方が後から見ても分かりやすいです<br></p><h3 class="">Filter Operators</h3><p>基本的に処理の対象は入力(input)のみ<br>[]内(parameter)と書いていますがもちろんTextReferenceも変数も使えます<br></p><h4 class="">all/is</h4><table><tbody><tr class="evenRow"><td>all</td><td>入力(input)は無視される<br>[]内(parameter)にtiddlersやshadows等を指定することで対象の一覧が結果として返る<br>たいてい後に続くTiddlerのために書く<br>ShadowTiddlerを対象にしたい場合に必要<br>tiddlersとshadowsを両方対象にしたい場合は<code>tiddlers+shadows</code>または<code>shadows+tiddlers</code></td></tr><tr class="oddRow"><td>is</td><td>all[]と似た機能だが、入力(input)のみを処理する点がall[]とは異なる</td></tr></tbody></table><h4 class="">フィールド系</h4><table><tbody><tr class="evenRow"><td>field</td><td>suffixに指定したフィールドが[]内(parameter)と一致する物を返す<br>[]内(parameter)が空だった場合、「フィールドが存在しない」または「フィールドは存在するが値が空」なTiddlerを返す</td></tr><tr class="oddRow"><td>fileds</td><td>Tiddlerに含まれるフィールドの一覧を返す</td></tr><tr class="evenRow"><td>has</td><td>suffixにfieldを指定したかどうかで挙動が変わる<br>suffixなしの場合<br>[]内(parameter)で指定したフィールドの値が空でないTiddler<br>!オペレーター名[]の場合はフィールドが存在しないか値が空のTiddler<br><br>suffixがfieldの場合<br>フィールドが存在するTiddler(値が空の場合も含む)<br>!オペレーター名[]の場合はフィールドが存在しないTiddler</td></tr><tr class="oddRow"><td>get</td><td>[]内(parameter)で指定したフィールドの取得</td></tr></tbody></table><h4 class="">タグ系</h4><table><tbody><tr class="evenRow"><td>tags</td><td>使われているタグの一覧</td></tr><tr class="oddRow"><td>tag</td><td>[]内(parameter)で指定したタグのついている物を返す。suffixによって結果が変わる模様</td></tr><tr class="evenRow"><td>tagging</td><td>tag[]と似たような用途で、入力(input)をタグのリストとして扱い、どれかが含まれる物を返す<br>ShadowsTiddlerも検索対象の模様</td></tr></tbody></table><h4 class="">index系(DataTiddlers関係)</h4><table><tbody><tr class="evenRow"><td>indexes</td><td>data tiddlerに含まれるindexの一覧。fields[]のindex版</td></tr><tr class="oddRow"><td>getindex</td><td>getのindex版</td></tr></tbody></table><h4 class="">検索</h4><table><tbody><tr class="evenRow"><td>search</td><td>suffixで指定のフィールド検索<br>5.1.18で大幅拡張されたため、今後はこれに一本化するのかもしれない。書き方もsuffix周りでこれまでにない拡張がなされている</td></tr><tr class="oddRow"><td>regexp</td><td>suffixで指定のフィールドを正規表現で検索</td></tr></tbody></table><h4 class="">接辞(先頭、末尾)</h4><table><tbody><tr class="evenRow"><td>prefix</td><td>[]内(parameter)から始まる入力(input)を返す</td></tr><tr class="oddRow"><td>suffix</td><td>[]内(parameter)で終わる入力(input)を返す</td></tr><tr class="evenRow"><td>addprefix</td><td>入力(input)のそれぞれの先頭に[]内(parameter)を付け加えた物を返す</td></tr><tr class="oddRow"><td>addsuffix</td><td>入力(input)のそれぞれの末尾に[]内(parameter)を付け加えた物を返す</td></tr><tr class="evenRow"><td>removeprefix</td><td>入力(input)のそれぞれの先頭から[]内(parameter)を取り除いた物を返す</td></tr><tr class="oddRow"><td>removesuffix</td><td>入力(input)のそれぞれの末尾から[]内(parameter)を取り除いた物を返す</td></tr></tbody></table><p>remove～は元々ついてなかった場合結果から省かれる模様<br>filterTestとwidgetが入力の時、removesuffix[Test]とするとfilterのみが結果として返される<br></p><h4 class="">その他</h4><table><tbody><tr class="evenRow"><td>sort</td><td>結果の並べ替え。</td></tr><tr class="oddRow"><td>range</td><td>入力(input)は無視される<br>1,2,3,4・・のような常に一定の差の数字のリストを返します<br>リストウィジェット等と組み合わせて使うと便利な場面があるかもしれません</td></tr></tbody></table><h4 class="">変換系</h4><table><tbody><tr class="evenRow"><td>encodehtml</td><td>HTMLでそのまま使えない文字をエスケープする</td></tr><tr class="oddRow"><td>decodehtml</td><td>encodehtml[]の逆</td></tr><tr class="evenRow"><td>encodeuri</td><td></td></tr><tr class="oddRow"><td>decodeuri</td><td></td></tr><tr class="evenRow"><td>encodeuricomponent</td><td></td></tr><tr class="oddRow"><td>decodeuricomponent</td><td></td></tr></tbody></table></div>
+
+
+
+</div>
+
+</p>
+</section>
+</body>
+</html>

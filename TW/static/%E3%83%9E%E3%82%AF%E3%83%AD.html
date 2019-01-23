@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="generator" content="TiddlyWiki" />
+<meta name="tiddlywiki-version" content="5.1.19" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="format-detection" content="telephone=no">
+<link id="faviconLink" rel="shortcut icon" href="favicon.ico">
+<link rel="stylesheet" href="static.css">
+<title>マクロ: seed TW — TW5の色々</title>
+<meta name="author" content="seed">
+<meta name="description" content="TiddlyWikiの解説 マクロ">
+<meta name="robots" content="noarchive"> 
+<meta name="googlebot" content="noimageindex, noarchive">
+</head>
+<body class="tc-body">
+
+<section class="tc-story-river">
+<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists   tc-tagged-TW%E3%81%AE%E3%83%A1%E3%83%A2 " data-tags="TWのメモ" data-tiddler-title="マクロ"><div class="tc-tiddler-title">
+<div class="tc-titlebar">
+<span class="tc-tiddler-controls">
+<span class=" tc-reveal"><button aria-label="その他のコマンド" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="その他のコマンドを表示します"></button><div class=" tc-reveal" hidden="true"></div></span><span class=" tc-reveal"><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><span class=" tc-reveal"><button aria-label="情報" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Finfo" title="このtiddlerの情報を表示します">
+</button></span><span class=" tc-reveal" hidden="true"></span></span></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="編集" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="このtiddlerを編集します"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="閉じる" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="このtiddlerを閉じます"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span>
+</span>
+
+<span>
+
+<span class="tc-tiddler-title-icon" style="fill:;">
+
+</span>
+
+
+
+<h2 class="tc-title">
+マクロ
+</h2>
+
+</span>
+
+</div>
+
+<div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div>
+</div><div class=" tc-reveal" hidden="true"></div>
+<div class=" tc-reveal">
+<div class="tc-subtitle">
+<a class="tc-tiddlylink tc-tiddlylink-missing" href=".html">
+
+</a> 
+</div>
+</div>
+<div class=" tc-reveal">
+<div class="tc-tags-wrapper"><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:#333333;
+color:#333333;">
+ TWのメモ
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span></div>
+</div>
+
+<div class="tc-tiddler-body tc-reveal"><h3 class="">マクロとは</h3><p>ウィジェット等を組み合わせて作った機能を新しい機能として定義して(作って)簡単に呼び出す(使う)ための機能です<br>定義したマクロは編集のスタンプアイコン(snippet)に登録しておくといいかもしれません<br><br>マクロを定義したTiddlerに「<a class="tc-tiddlylink tc-tiddlylink-missing" href="%2524%253A%252Ftags%252FMacro.html">$:/tags/Macro</a>」タグをつけることでそのTiddler以外からも呼び出しができるようになります<br>その他TWに標準で定義されているCore Macrosも存在します<br><br>JavaScriptで定義することも出来ますが、ここでは扱いません<br></p><h3 class="">定義(Macro Definitions in WikiText)</h3><p>マクロの作り方です<br>今は作らない場合は呼び出し(Macro Calls in WikiText)まで飛ばしてください<br>マクロの内容によって書き方に多少幅があります<br></p><h4 class="">複数行マクロ</h4><pre><code>\define マクロ名()
+マクロの本体
+\end</code></pre><p>マクロ名と(は続けて書く必要があります(スペースも入れてはいけません)</p><h4 class="">1行マクロ</h4><pre><code>\define マクロ名() マクロの本体</code></pre><p>複数行マクロと異なり<code>\end</code>はつけません</p><h4 class="">引数の書き方</h4><pre><code>\define マクロ名(引数1, 引数2)
+マクロの本体
+\end</code></pre><p>引数の書式は入力がない場合のデフォルト値を指定するなら<code>引数名:デフォルト値</code>、無い場合は<code>引数名</code>です<br>1行マクロも引数の書き方は同様です<br></p><h4 class="">マクロの本体で引数や外部の変数を使う方法</h4><p>マクロの本体では引数だけでなく呼び出し元で定義された変数(またはマクロ)を使うことができます。また、呼び出し方は2種類あります(後述)</p><table><thead><tr class="evenRow"><td>書式</td><td>対象</td><td>挙動</td></tr></thead><tbody><tr class="oddRow"><td><code>$引数名$</code></td><td>マクロで定義した引数に渡された値</td><td>渡された文字列に置換します</td></tr><tr class="evenRow"><td><code>$(変数名)$</code></td><td>マクロの外で定義された変数やマクロ</td><td>結果の文字列に置換します</td></tr><tr class="oddRow"><td><code>&lt;&lt;_引数名_&gt;&gt;</code></td><td>マクロで定義した引数に渡された値</td><td>呼び出し</td></tr><tr class="evenRow"><td><code>&lt;&lt;変数名&gt;&gt;</code></td><td>マクロの外で定義された変数やマクロ</td><td>呼び出し</td></tr></tbody></table><p>置換は対象の値や結果に置換した後でマクロの本体が実行されます<br>つまり、その対象の値や結果が元々そこに書いてあったかのように振舞うということです<br>これは文字列の結合を簡単に表現できる方法です<br>例えば前後に文字列を追加した物をマクロやウィジェットに渡す時に便利です<br><br>呼び出しは普段の呼び出しと同様です<br>こちらは置換で問題になる値に含むことの出来ない文字列を回避することができます<br>例えばマクロやウィジェットに値として<code>&quot;$name$&quot;</code>のように渡した場合、nameの値に&quot;が含まれていた場合に機能しません<br><br>置換の必要性がなければ呼び出しの方を使う方が文字の制限を受けずに済んでいいかもしれません<br></p><h3 class="">呼び出し(Macro Calls in WikiText)</h3><p>呼び出し方は2種類あります</p><h4 class="">通常の呼び出し</h4><pre><code>&lt;&lt;マクロ名&gt;&gt;
+&lt;&lt;マクロ名 引数名1:値1 引数名2:値2&gt;&gt;
+&lt;&lt;マクロ名 引数1の値 引数2の値&gt;&gt;</code></pre><p>マクロに定義された引数の順番通りに値を書くことで3行目のように引数名を省略できます<br>引数名を指定する方法には順番を無視できる他に1個ずれてたみたいなミスを防げるメリットがあります<br>マクロによってはこの些細なミスで長時間悩む場合もあるかも？<br><br>また、変数も1行目と同様の書き方で呼び出されます<br><code>&lt;&lt;currentTiddler&gt;&gt;</code>とか、SetWidgetやVarsWidgetなどで設定した変数とか<br></p><h4 class="">MacroCallWidgetを使った呼び出し</h4><pre><code>&lt;$macrocall $name=&quot;マクロ名&quot; 引数名=値/&gt;</code></pre><p>通常の呼び出しで使う書式の上位版です<br>通常の呼び出しではうまくいかない時でもこちらで呼び出すとうまくいく場合があるかもしれません<br></p><h4 class="">引数について</h4><p>引数には値を直接渡す以外にもTextReferenceやマクロやフィルターの結果等を渡すこともできます<br>マクロを渡したい場合はマクロコールウィジェットを使います<br></p><h3 class="">使える文字/使えない文字</h3><p>気になったら読む程度で問題ないです。Core Macrosまで飛ばして構いません</p><h4 class="">マクロ名</h4><p>マクロ名には使えない文字があります。<br><code>(</code>は定義する際には使えません<br><code>&gt;</code>は通常の呼び出しを行う際には使えません<br>なので<code>()&lt;&gt;</code>の4文字は使わない方が良いです<br>実は日本語は使えますが、ずっと使えるかは分からないのでアルファベットを使う方が確実でしょうか<br><br>なお、<code>&gt;</code>はマクロコールウィジェットを利用すれば今のところ使えます<br>使うべきではないでしょうが<br></p><h4 class="">引数名</h4><p>引数名はアルファベットの大文字と小文字、数字、<code>-</code>、<code>_</code>のみが使えます<br>日本語は使えません<br></p><h4 class="">マクロ定義における引数同士の区切り</h4><p>引数同士の区切りとして<code>,</code>やスペースや改行等を使うことができます<br>また、デフォルト値を指定するときの:の前後にもスペース等の空白文字を入れることが出来るようです<br></p><h4 class="">値</h4><p>値は以下のように書けます(デフォルト値も同様です)</p><table><thead><tr class="evenRow"><td>例</td><td>値に含むことの出来ない文字列</td></tr></thead><tbody><tr class="oddRow"><td><code>&quot;&quot;&quot;値&quot;&quot;&quot;</code></td><td><code>&quot;&quot;&quot;</code></td></tr><tr class="evenRow"><td><code>&quot;値&quot;</code></td><td><code>&quot;</code></td></tr><tr class="oddRow"><td><code>'値'</code></td><td><code>'</code></td></tr><tr class="evenRow"><td><code>[[値]]</code></td><td><code>]</code></td></tr><tr class="oddRow"><td><code>値</code></td><td><code>&quot;</code>と<code>'</code>とスペースや改行</td></tr></tbody></table><p></p><h3 class="">Core Macros</h3><p>TWに標準で用意されているマクロから一部を簡単に紹介<br>基本的に公式の各TiddlerのParametersがマクロの引数の順番になっている<br></p><h4 class="">おすすめ</h4><table><tbody><tr class="evenRow"><td>tabs Macro</td><td>フィルターで指定したTiddlerをタブで切り替え可能な形式で表示する(タブブラウザのように)<br>タブに縦と横のパターンがある</td></tr><tr class="oddRow"><td>Table-of-Contents Macros</td><td>タグを利用してツリーっぽい表示を作って表示したりtabsマクロの用にできる<br>いわゆる目次でtocと略して表記されたりする<br>引数のsortを&quot;all[tiddlers]任意のオペレーター&quot;とすることでタグ抜きでの利用も可能<br>例えば<code>&quot;all[tiddlers]prefix[SystemTag]&quot;</code><br>ただ、タグ抜きだと階層化はされない(多分)<br>toc-tabbed-internal-navマクロやtoc-tabbed-external-navマクロは個人的におすすめ</td></tr><tr class="evenRow"><td>tree Macro</td><td>Tiddlerタイトルの/を区切り文字に見立てて階層化して表示します<br>百聞は一見にしかず</td></tr></tbody></table><h4 class="">使うかも？</h4><table><tbody><tr class="evenRow"><td>tag Macro</td><td>指定したタグを表示できる<br>クリックすると指定のタグがついたTiddlerの一覧を表示<br>各Tiddlerの本文の上に表示されている物と同じ</td></tr><tr class="oddRow"><td>now Macro</td><td>指定した形式で日時を表示できる<br>ただし表示されるのはこのマクロが表示された瞬間の物で、時計の代わりにはならない<br>ウィジェット等に渡して使うことがある</td></tr><tr class="evenRow"><td>timeline Macro</td><td>サイドバーの最近の更新(Recent)に表示されている更新履歴と同じ物を表示できる<br>subfilterに&quot;任意のオペレーター&quot;とすることで対象のTiddlerを絞り込める<br>標準ではシステムTiddlerは対象外なので必要ならばsubfilterで含めるようにする</td></tr></tbody></table><p>今のところToCマクロのsortとtimelineマクロのsubfilterはマクロ内では$引数名$でフィルター内部に埋め込まれて(置換で)利用されているので元のフィルターを無視した運用ができる</p><h4 class="">マクロ等何か作る時に使えるマクロ</h4><table><tbody><tr class="evenRow"><td>qualify Macro</td><td>(渡した文字列)-(currentTiddler依存(？)のユニークな数字)を返す<br>マクロを作る時にマクロの本体中にどこかのフィールドに入力を行う場合に便利<br>普通に作ると同じフィールドに書き込まれてしまうため、複数箇所で使うには同時に使わないようにするか呼び出しで毎度書き込み先を指定することになるが、qualifyマクロを使うとその手間が省ける<br>ただし、同じTiddlerで二度以上使う場合は指定も必要になる(同じ数字が付与されるので)</td></tr></tbody></table></div>
+
+
+
+</div>
+
+</p>
+</section>
+</body>
+</html>
