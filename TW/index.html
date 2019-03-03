@@ -157,6 +157,8 @@ Error message and password prompt
 
 <li>$:/config/TiddlerInfo/Mode</li>
 
+<li>$:/config/TimestampDisable</li>
+
 <li>$:/config/ViewToolbarButtons/Visibility/$:/core/ui/Buttons/info</li>
 
 <li>$:/config/WikiParserRules/Inline/extlink</li>
@@ -198,6 +200,8 @@ Error message and password prompt
 <li>$:/state/add-plugin-info/$:/temp/ServerConnection/https://tiddlywiki.com/library/v5.1.19/index.html/$:/temp/RemoteAssetInfo/https://tiddlywiki.com/library/v5.1.19/index.html/$:/languages/ja-JP</li>
 
 <li>$:/state/image-picker/system--273728878</li>
+
+<li>$:/state/image-picker/system--926725981</li>
 
 <li>$:/state/plugin-info-663959582-$:/plugins/seed/toc--1188635663</li>
 
@@ -253,9 +257,13 @@ Error message and password prompt
 
 <li>$:/UploadName</li>
 
+<li>Draft of 'TIPS' by seed</li>
+
 <li>JavaScript</li>
 
 <li>Markdown</li>
+
+<li>Node.js版TW</li>
 
 <li>sample/transclude</li>
 
@@ -322,6 +330,9 @@ Error message and password prompt
 </div>
 <div creator="seed" modifier="seed" title="$:/config/TiddlerInfo/Mode">
 <pre>sticky</pre>
+</div>
+<div title="$:/config/TimestampDisable">
+<pre>yes</pre>
 </div>
 <div creator="seed" modifier="seed" title="$:/config/ViewToolbarButtons/Visibility/$:/core/ui/Buttons/info">
 <pre>show</pre>
@@ -9207,12 +9218,13 @@ Error message and password prompt
 </div>
 <div creator="seed" modifier="seed" title="$:/DefaultTiddlers">
 <pre>[all[tiddlers]tag[案内]]
+[all[tiddlers]tag[TWのメモ]]
 </pre>
 </div>
 <div status="complete" title="$:/Import">
 <pre>The following tiddlers were imported:
 
-# [[表紙]]</pre>
+# [[$:/plugins/seed/toc]]</pre>
 </div>
 <div title="$:/isEncrypted">
 <pre>no</pre>
@@ -11531,7 +11543,7 @@ Error message and password prompt
     }
 }</pre>
 </div>
-<div author="seed" description="wiki風の目次とページ内リンク" list="初めに 説明" plugin-type="plugin" tags="" title="$:/plugins/seed/toc" type="application/json" version="0.0.1">
+<div author="seed" description="wiki風の目次とページ内リンク" list="初めに 説明" plugin-type="plugin" tags="" title="$:/plugins/seed/toc" type="application/json" version="0.0.2">
 <pre>{
     &quot;tiddlers&quot;: {
         &quot;$:/plugins/seed/toc/css&quot;: {
@@ -11557,7 +11569,7 @@ Error message and password prompt
             &quot;creator&quot;: &quot;seed&quot;
         },
         &quot;$:/plugins/seed/toc/modules/macros/wikitocfmt.js&quot;: {
-            &quot;text&quot;: &quot;/*\\\ntitle: $:/plugins/seed/toc/modules/macros/wikitocfmt.js\ntype: application/javascript\nmodule-type: macro\n\nMacro to return a formatted text of toc\n\n\\*/\n(function(){\n\n/*jslint node: true, browser: true */\n/*global $tw: false */\n\&quot;use strict\&quot;;\n\n/*\nInformation about this macro\n*/\n\nexports.name = \&quot;wikitocfmt\&quot;;\n\nexports.params = [\n\t{name: \&quot;htmlsrc\&quot;},\n\t{name: \&quot;selector\&quot;},\n\t{name: \&quot;format\&quot;},\n\t{name: \&quot;rawlevel\&quot;, default: \&quot;no\&quot;}\n\t\n];\n\n/*\nRun the macro\n*/\nexports.run = function(htmlsrc, selector, format, rawlevel) {\n\thtmlsrc = htmlsrc || \&quot;\&quot;;\n\tselector = selector || $tw.wiki.getTiddlerText(\&quot;$:/plugins/seed/toc/settings/wikitocfmt/default-selector\&quot;);\n\tformat = format || $tw.wiki.getTiddlerText(\&quot;$:/plugins/seed/toc/settings/wikitocfmt/default-format\&quot;);\n\tlet isRawLevel = ( rawlevel === \&quot;yes\&quot; || rawlevel === \&quot;true\&quot; || rawlevel === true )\n\n\n\tlet tidDoc = (new DOMParser()).parseFromString(htmlsrc, \&quot;text/html\&quot;);\n\tlet toc = tidDoc.querySelectorAll(selector);\n\n\tlet result = \&quot;\&quot;;\n\t\n\tif ( 0 &lt; toc.length ) {\n\t\tresult = tocFormat(toc, format, isRawLevel);\n\t}\n\n\n\treturn result;\n};\n\nfunction tocFormat(nodeList, format, isRawLevel) {\n\tlet formatTextRe = /#\\{text\\}/ig;\n\tlet formatLevelRe =      /#\\{level&lt;&gt;(.*?)&lt;&gt;([+-]?\\d+)\\}/ig;\n\tlet levelSettingRe = /^.*?#\\{level&lt;&gt;(.*?)&lt;&gt;([+-]?\\d+)\\}.+$/i;\n\tlet indexRe = /#\\{index\\}/ig;\n\t\n\tlet minLevel = 1;\n\tif ( isRawLevel === false ) {\n\t\tminLevel = getMinLevel(nodeList);\n\t}\n\tlet levelChar = format.replace( levelSettingRe, \&quot;$1\&quot;);\n\tlet addLevel = parseInt( format.replace( levelSettingRe, \&quot;$2\&quot;) ) - (minLevel - 1);\n\t\n\tlet result = \&quot;\&quot;;\n\tlet iMax = nodeList.length;\n\tfor ( let i=0; i&lt;iMax; i++ ) {\n\t\tlet lvl = getTagLevel(nodeList[i].tagName) + addLevel;\n\t\tlvl = Math.max(0, lvl);\n\t\tlet lvStr = levelChar.repeat( lvl );\n\t\tresult += format\n\t\t\t.replace(formatTextRe, $tw.utils.htmlEncode(nodeList[i].textContent) )\n\t\t\t.replace(formatLevelRe, lvStr)\n\t\t\t.replace(indexRe, i.toString())\n\t\t\t + \&quot;\\n\&quot;;\n\t}\n\treturn result;\n}\nfunction getMinLevel(nodeList) {\n\tlet minLevel = 1000;\n\tlet level;\n\tlet iMax = nodeList.length;\n\tfor ( let i=0; i&lt;iMax; i++ ) {\n\t\tlevel = getTagLevel(nodeList[i].tagName);\n\t\tif ( level &lt; minLevel ) {\n\t\t\tminLevel = level;\n\t\t}\n\t}\n\treturn minLevel;\n}\n\nfunction getTagLevel(tagName) {\n\tlet levelRe = /^h([1-6])$/i;\n\tif ( levelRe.test(tagName) ) {\n\t\treturn parseInt(tagName.replace(levelRe, \&quot;$1\&quot;));\n\t} else {\n\t\treturn 1;\n\t}\n}\n\n})();&quot;,
+            &quot;text&quot;: &quot;/*\\\ntitle: $:/plugins/seed/toc/modules/macros/wikitocfmt.js\ntype: application/javascript\nmodule-type: macro\n\nMacro to return a formatted text of toc\n\n\\*/\n(function(){\n\n/*jslint node: true, browser: true */\n/*global $tw: false */\n\&quot;use strict\&quot;;\n\n/*\nInformation about this macro\n*/\n\nexports.name = \&quot;wikitocfmt\&quot;;\n\nexports.params = [\n\t{name: \&quot;htmlsrc\&quot;},\n\t{name: \&quot;selector\&quot;},\n\t{name: \&quot;format\&quot;},\n\t{name: \&quot;rawlevel\&quot;, default: \&quot;no\&quot;}\n\t\n];\n\n/*\nRun the macro\n*/\nexports.run = function(htmlsrc, selector, format, rawlevel) {\n\thtmlsrc = htmlsrc || \&quot;\&quot;;\n\tselector = selector || $tw.wiki.getTiddlerText(\&quot;$:/plugins/seed/toc/settings/wikitocfmt/default-selector\&quot;);\n\tformat = format || $tw.wiki.getTiddlerText(\&quot;$:/plugins/seed/toc/settings/wikitocfmt/default-format\&quot;);\n\tlet isRawLevel = ( rawlevel === \&quot;yes\&quot; || rawlevel === \&quot;true\&quot; || rawlevel === true )\n\n\n\tlet tidDoc = (new DOMParser()).parseFromString(htmlsrc, \&quot;text/html\&quot;);\n\tlet toc = tidDoc.querySelectorAll(selector);\n\n\tlet result = \&quot;\&quot;;\n\t\n\tif ( 0 &lt; toc.length ) {\n\t\tresult = tocFormat(toc, format, isRawLevel);\n\t}\n\n\n\treturn result;\n};\n\nfunction tocFormat(nodeList, format, isRawLevel) {\n\tlet formatTextRe = /#\\{text\\}/ig;\n\tlet formatLevelRe =      /#\\{level&lt;&gt;(.*?)&lt;&gt;([+-]?\\d+)\\}/ig;\n\tlet levelSettingRe = /^.*?#\\{level&lt;&gt;(.*?)&lt;&gt;([+-]?\\d+)\\}.+$/i;\n\tlet indexRe = /#\\{index\\}/ig;\n\t\n\tlet minLevel = 1;\n\tif ( isRawLevel === false ) {\n\t\tminLevel = getMinLevel(nodeList);\n\t}\n\tlet levelChar = format.replace( levelSettingRe, \&quot;$1\&quot;);\n\tlet addLevel = parseInt( format.replace( levelSettingRe, \&quot;$2\&quot;) ) - (minLevel - 1);\n\t\n\tlet result = \&quot;\&quot;;\n\tlet iMax = nodeList.length;\n\tfor ( let i=0; i&lt;iMax; i++ ) {\n\t\tlet lvl = getTagLevel(nodeList[i].tagName) + addLevel;\n\t\tlvl = Math.max(0, lvl);\n\t\tlet lvStr = levelChar.repeat( lvl );\n\t\tresult += format\n\t\t\t.replace(formatTextRe, nodeList[i].textContent )\n\t\t\t.replace(formatLevelRe, lvStr)\n\t\t\t.replace(indexRe, i.toString())\n\t\t\t + \&quot;\\n\&quot;;\n\t}\n\treturn result;\n}\nfunction getMinLevel(nodeList) {\n\tlet minLevel = 1000;\n\tlet level;\n\tlet iMax = nodeList.length;\n\tfor ( let i=0; i&lt;iMax; i++ ) {\n\t\tlevel = getTagLevel(nodeList[i].tagName);\n\t\tif ( level &lt; minLevel ) {\n\t\t\tminLevel = level;\n\t\t}\n\t}\n\treturn minLevel;\n}\n\nfunction getTagLevel(tagName) {\n\tlet levelRe = /^h([1-6])$/i;\n\tif ( levelRe.test(tagName) ) {\n\t\treturn parseInt(tagName.replace(levelRe, \&quot;$1\&quot;));\n\t} else {\n\t\treturn 1;\n\t}\n}\n\n})();&quot;,
             &quot;type&quot;: &quot;application/javascript&quot;,
             &quot;title&quot;: &quot;$:/plugins/seed/toc/modules/macros/wikitocfmt.js&quot;,
             &quot;tags&quot;: &quot;&quot;,
@@ -11581,7 +11593,7 @@ Error message and password prompt
             &quot;tags&quot;: &quot;&quot;
         },
         &quot;$:/plugins/seed/toc/settings/wikitocfmt/default-format&quot;: {
-            &quot;text&quot;: &quot;#{level&lt;&gt;*&lt;&gt;0} &lt;$link to=\&quot;#{index}\&quot;&gt;#{text}&lt;/$link&gt;&quot;,
+            &quot;text&quot;: &quot;#{level&lt;&gt;*&lt;&gt;0} &lt;$link to=\&quot;#{index}\&quot;&gt;&lt;$text text=\&quot;\&quot;\&quot;#{text}\&quot;\&quot;\&quot;/&gt;&lt;/$link&gt;&quot;,
             &quot;type&quot;: &quot;text/plain&quot;,
             &quot;title&quot;: &quot;$:/plugins/seed/toc/settings/wikitocfmt/default-format&quot;,
             &quot;tags&quot;: &quot;&quot;
@@ -11884,8 +11896,11 @@ $code$
 <div creator="seed" modifier="seed" title="$:/state/image-picker/system--273728878">
 <pre>hide</pre>
 </div>
+<div title="$:/state/image-picker/system--926725981">
+<pre>hide</pre>
+</div>
 <div created="20190105213032202" creator="seed" modified="20190105232610171" modifier="seed" title="$:/state/plugin-info-663959582-$:/plugins/seed/toc--1188635663">
-<pre>初めに</pre>
+<pre>contents</pre>
 </div>
 <div creator="seed" modifier="seed" title="$:/state/plugin-info-896098052-$:/plugins/tiddlywiki/markdown--436478829">
 <pre>usage</pre>
@@ -11924,7 +11939,7 @@ $code$
 <pre>$:/core/ui/ControlPanel/Saving/General</pre>
 </div>
 <div created="20190105213218738" creator="seed" modified="20190114231304764" modifier="seed" title="$:/state/tab/sidebar--595412856">
-<pre>$:/seed/sidebar/toc</pre>
+<pre>$:/core/ui/SideBar/Open</pre>
 </div>
 <div creator="seed" modifier="seed" title="$:/state/tabs/controlpanel/toolbars-1345989671">
 <pre>$:/core/ui/ControlPanel/Toolbars/EditToolbar</pre>
@@ -11932,7 +11947,7 @@ $code$
 <div creator="s" modifier="seed" title="$:/status/UserName">
 <pre>seed</pre>
 </div>
-<div list="表紙" title="$:/StoryList">
+<div list="" title="$:/StoryList">
 <pre></pre>
 </div>
 <div creator="seed" list="$:/core/ui/SideBar/Open $:/seed/sidebar/toc $:/core/ui/SideBar/Recent $:/core/ui/SideBar/Tools $:/core/ui/SideBar/More" modifier="seed" title="$:/tags/SideBar">
@@ -11954,19 +11969,19 @@ $code$
         },
         &quot;$:/info/url/full&quot;: {
             &quot;title&quot;: &quot;$:/info/url/full&quot;,
-            &quot;text&quot;: &quot;http://seed.tiddlyspot.com/&quot;
+            &quot;text&quot;: &quot;file:///home/seed/%E3%83%80%E3%82%A6%E3%83%B3%E3%83%AD%E3%83%BC%E3%83%89/index.html&quot;
         },
         &quot;$:/info/url/host&quot;: {
             &quot;title&quot;: &quot;$:/info/url/host&quot;,
-            &quot;text&quot;: &quot;seed.tiddlyspot.com&quot;
+            &quot;text&quot;: &quot;&quot;
         },
         &quot;$:/info/url/hostname&quot;: {
             &quot;title&quot;: &quot;$:/info/url/hostname&quot;,
-            &quot;text&quot;: &quot;seed.tiddlyspot.com&quot;
+            &quot;text&quot;: &quot;&quot;
         },
         &quot;$:/info/url/protocol&quot;: {
             &quot;title&quot;: &quot;$:/info/url/protocol&quot;,
-            &quot;text&quot;: &quot;http:&quot;
+            &quot;text&quot;: &quot;file:&quot;
         },
         &quot;$:/info/url/port&quot;: {
             &quot;title&quot;: &quot;$:/info/url/port&quot;,
@@ -11974,7 +11989,7 @@ $code$
         },
         &quot;$:/info/url/pathname&quot;: {
             &quot;title&quot;: &quot;$:/info/url/pathname&quot;,
-            &quot;text&quot;: &quot;/&quot;
+            &quot;text&quot;: &quot;/home/seed/%E3%83%80%E3%82%A6%E3%83%B3%E3%83%AD%E3%83%BC%E3%83%89/index.html&quot;
         },
         &quot;$:/info/url/search&quot;: {
             &quot;title&quot;: &quot;$:/info/url/search&quot;,
@@ -11982,7 +11997,7 @@ $code$
         },
         &quot;$:/info/url/origin&quot;: {
             &quot;title&quot;: &quot;$:/info/url/origin&quot;,
-            &quot;text&quot;: &quot;http://seed.tiddlyspot.com&quot;
+            &quot;text&quot;: &quot;null&quot;
         },
         &quot;$:/info/browser/screen/width&quot;: {
             &quot;title&quot;: &quot;$:/info/browser/screen/width&quot;,
@@ -12119,13 +12134,24 @@ $code$
 <div creator="seed" modifier="seed" title="$:/UploadName">
 <pre>seed</pre>
 </div>
-<div creator="seed" modifier="seed" tags="TWのメモ" title="JavaScript">
-<pre>&quot;&quot;&quot;
+<div title="Draft of 'TIPS' by seed">
+<pre></pre>
+</div>
+<div creator="seed" modifier="seed" tags="TWのメモ" title="JavaScript" wikitoc="show">
+<pre>!!!
+~https://tiddlywiki.com/dev/とソース見ればなんとなくかけるようになる
+
+!!!目的
+
+&quot;&quot;&quot;
 普通のマクロ等では難しい機能を実装したい時に
 
 新しいウィジェットや新しいフィルターのオペレーターを作ることができる
 WikiTextが気に入らなければJavaScriptでパーサーを作ることもできる
+&quot;&quot;&quot;
 
+!!!方法
+&quot;&quot;&quot;
 既存のTiddler(ShadowTiddler)を複製して改変すれば意外となんとかなる
 TWの関数の類は関数名で検索して探す感じになるけど割といける
 `$tw.wiki.～`とか`$tw.utils.～`とか結構使う
@@ -12138,7 +12164,25 @@ TWの関数の類は関数名で検索して探す感じになるけど割とい
 ここにも情報がいろいろあるのでより深く色々するなら見よう(でも英語)
 ~https://tiddlywiki.com/dev/
 ブラウザでプラグインを作成する方法なんかも載っている
-&quot;&quot;&quot;</pre>
+&quot;&quot;&quot;
+
+!!!雑メモ
+*ソースは検索でそれっぽい単語をひっかければなんとかなる
+**基本的に隠し(Shadow)Tiddlerのどれか、またはboot.jsかbootprefix.jsのどこかにある
+
+*起動時の流れはboot.jsを見る。これとbootprefix.jsに起動時に最低限必要なものがあってちょっとした設定をした後startupの実行(ここでその他の関数などを読み込む)
+
+*startupは`exports.after`や`exports.before`でどのタイミングで読み込むかを制御している
+
+*$tw.〜.〜な関数の読み込みには$tw.modules.applyMethods()とmodule-typeフィールドを使っていて、その多くは$:/core/modules/startup/load-modules.jsで読み込まれている
+
+*$tw.wiki.〜等を書き換えたい場合は新しいstartup用Tiddlerでload-module.jsの後に読み込まれるようにして定義すればいい
+**$tw.wiki.〜はbootで`$tw.wiki = new $tw.Wiki();`と書かれていて実際の関数は$tw.Wiki.prototype.〜の方なのでそちらを書き換える
+
+*書き換えでなく追加ならば同様のファイルを複製した後必要な部分を書き換える方が良い
+
+*JavaScriptマクロを作るなら$:/core/modules/macros/now.jsを複製して書き換えるのがシンプルなのでおすすめ
+</pre>
 </div>
 <div creator="seed" modifier="seed" tags="TWのメモ" title="Markdown" type="">
 <pre>日本語化とほぼ同様の手順で公式のMarkdown parserプラグインを入れる(LanguagesタブでなくPluginsタブにある)
@@ -12162,8 +12206,53 @@ $$$
 ```
 
 
-Tiddlerの種類でMarkdownを指定しても使えるが、TWの各種機能が使えなくなる(多分)ため使い勝手はいまいち
+Tiddlerの種類でMarkdownを指定しても使えるが、そのTiddlerでTWの各種機能が使えなくなるため柔軟性にかける(他のTiddlerからTranscludeするならありかもしれない)
 </pre>
+</div>
+<div tags="TWのメモ" title="Node.js版TW" wikitoc="show">
+<pre>!!!特徴
+*サーバーとして機能する
+*保存が1ファイルでなく各Tiddlerごとに.tidファイル(または.jsなど対応する拡張子＋.metaファイル)
+
+!!!注意点
+!!!!tidファイルでの保存を前提としている
+
+.tidファイルは
+
+```
+フィールド1: 値1
+フィールド2: 値2
+
+textフィールドの値
+```
+
+のように`フィールド: 値`の行＋空行＋textフィールドの値という形式になっており、textフィールド以外に空行を入れない前提になっているため、EditTextWidgetでtag=textareaとするなどしてtextフィールド以外に改行を入れた場合正しく読み取れない場合がある
+
+例えば空行が入ってた場合や行頭をfield: のように紛らわしい書き方をしてしまった場合はおかしくなる
+
+一応ソースコードを書き換えれば保存をJSONなどにすることは可能(ただし自分で管理しないといけなくなる)
+
+!!!!ローカルファイルへのアクセスが制限される
+セキュリティを緩くしないとHDDに保存した画像などを直接アクセスすることは出来ない
+
+対策としてTWにファイルをインポートしてTiddlerという形を取ってみたりそれ用にサーバーを立てたり
+
+!!!メリット
+*Tiddlerごとに1ファイルなので1回の保存容量は1ファイルより小さくなってるはず
+*Tiddlerごとの差分が取りやすい
+
+
+!!!覚書
+
+!!!!StoryList
+
+そのままだとTiddlerを開いたり閉じたりするたびに$:/StoryListが保存され、ログが無駄に流れる
+
+このTiddlerは現在開いているTiddlerをlistフィールドに保存していて更に保存対象なのでそういう挙動になる
+
+起動時に最後に開いてたTiddlerを表示など、このTiddlerを利用した機能を使っていなければ$:/config/SyncFilterで除外可能
+
+本当は別のTiddlerで制限できる気がするが、うまくいかなかった</pre>
 </div>
 <div creator="seed" modifier="seed" tags="サンプル用タグ2 サンプル用タグ1" test="testフィールドです" title="sample/transclude">
 <pre>本文です</pre>
@@ -12613,6 +12702,13 @@ ButtonWidget等とActionSendMessageWidgetでtm-new-tiddlerメッセージを使�
 
 例：[[TIPS/tm-new-tiddler]]
 
+!!!created/modified/creator/modifierフィールドを書き換えたくない
+&quot;&quot;&quot;
+Tiddlerの作成/更新時に上記フィールドを書き換えるのを止めたい場合は$:/config/TimestampDisableのtextフィールドにyesと書く
+もし日時は必要だが名前が残るのが嫌な場合は$:/core/modules/wiki.jsにあるgetCreationFieldsとgetModificationFieldsという関数を改変する
+[[JavaScript]]も参照
+&quot;&quot;&quot;
+
 !!!TWのheadタグにメタタグ等を追加したい
 &quot;&quot;&quot;
 Tiddlerに書いて`$:/tags/RawMarkup`タグをつける
@@ -12637,6 +12733,7 @@ CTRL+クリック
 
 *フィールドを編集するのがそのままだと複数行の場合に困るため、編集用のTiddlerを用意するか編集画面&lt;&lt;tag $:/tags/EditTemplate&gt;&gt;に編集用のTiddlerを追加しないと面倒
 *複数のフィールドにデータが分かれるため単純な検索が若干面倒(search[]が複数のフィールドを指定できるので活用しましょう)
+*text以外のフィールドに改行を入れる場合.tidと相性がよくない(エクスポートにはJSONを使いましょう)
 
 やり方はテンプレートTiddlerの本文に見た目を書き、各Tiddlerの任意のフィールド(複数可)にデータ、textフィールドに`{{||テンプレートTiddler}}`を書くだけです
 
@@ -12650,6 +12747,22 @@ CTRL+クリック
 #{{$:/core/images/stamp}}の一番下の「Add your own」をクリック
 #Tiddlerの編集画面が開くので本文に定型文、captionフィールドに{{$:/core/images/stamp}}で表示したい名前を入力
 #*表示される順番はcaptionフィールドの名前順の模様
+
+!!!特定のTiddlerだけをファイルに保存したい
+&quot;&quot;&quot;
+エクスポートを使います
+{{$:/core/images/export-button}}ボタンが各Tiddler(そのTiddler対象)、フィルター検索(フィルターにヒットしたTiddler対象)、サイドバーのツール(Tools)タブ(隠しでもシステムでもないTiddler対象)にあります
+保存形式は運用によって多少相性が悪い物もありますがJSONならまず問題ないでしょう
+
+Static HTMLはフィールド情報が消えてると思われるので注意
+&quot;&quot;&quot;
+
+!!!TW保存時に特定のTiddlerを保存したくない
+&quot;&quot;&quot;
+$:/config/SaveWikiButton/Templateで指定されているTiddlerにあるsaveTiddlerFilterというマクロ内に書かれたフィルターに一致するTiddlerが保存対象です(多分)
+
+また、node.js版では$:/config/SyncFilterを参照してください
+&quot;&quot;&quot;
 
 !!!表で特定のセルや行、列だけ色を変えるなどのスタイルを適用したい
 &quot;&quot;&quot;
@@ -12725,14 +12838,15 @@ TWを表示する時に使っている部品のようなものです(多分)
 
 ただ、ここで説明するのはWikiText等では難しい機能や便利な機能を埋め込む方法です
 使うのにフィルターやTextReferenceが必要になる場合が結構あるので適宜調べましょう
-普通のHTMLならJavaScriptでやるようなことが手軽に実装できる場合もあります
+普通ならJavaScriptでやるようなことが手軽に実装できる場合もあります
 &quot;&quot;&quot;
 
 !!!書式
 &quot;&quot;&quot;
-基本的な形は`&lt;$ウィジェット名&gt;内容&lt;/$ウィジェット名&gt;`で、多くの場合は属性(Attribute)をつけて`&lt;$ウィジェット名 属性名1=値1 属性名2=値2&gt;内容&lt;/$ウィジェット名&gt;`の形を取る
+基本的な形は`&lt;$ウィジェット名&gt;内容&lt;/$ウィジェット名&gt;`
+多くの場合は属性(Attribute)をつけて`&lt;$ウィジェット名 属性名1=値1 属性名2=値2&gt;内容&lt;/$ウィジェット名&gt;`の形を取る
 属性(Attribute)は公式の各WidgetのTiddlerに表で説明されています
-値は他と同様に&quot;や&lt;$text text='&quot;&quot;&quot;'/&gt;で挟んで指定できます
+値は他と同様に'や&quot;や&lt;$text text='&quot;&quot;&quot;'/&gt;で挟んだ文字列、マクロ及び変数、TextReference、&lt;$text text=&quot;{{{フィルター}}}&quot; /&gt;などで指定できます
 内容(content)はウィジェットによってあったりなかったりで、だいたいは属性(Attribute)の表の付近に
 &quot;&quot;&quot;
 
@@ -12755,20 +12869,22 @@ TWに標準で用意されているウィジェットから一部紹介
 
 !!!!割とよく使う
 
-|RevealWidget|画面に表示したり消したり&lt;br&gt;様々な方法によって表示/非表示を切り替えて使われている&lt;br&gt;かなり頻繁に登場するので早めにそういうものだと知っておいた方が理解が早まると思ったウィジェット&lt;br&gt;名前がstateから始まる属性の値とtext属性の値がtypeで指定した条件と一致したら表示、しなかったら非表示という感じの機能です|
-|ListWidget|フィルターを使った繰り返し処理や簡単な分岐のようなことを行う&lt;br&gt;内容(content)で書いたことをフィルターの各結果に対して行う|
+|RevealWidget|画面に表示したり消したり&lt;br&gt;様々な方法によって表示/非表示を切り替えて使われている&lt;br&gt;かなり頻繁に登場するので早めにそういうものだと知っておいた方が理解が早まると思ったウィジェット&lt;br&gt;名前がstateから始まる属性の値で指定された対象とtext属性の値がtypeで指定した条件と一致したら表示、しなかったら非表示という感じの機能です&lt;br&gt;例えばstate=&quot;!!foo&quot; text=&quot;yes&quot; type=&quot;match&quot;と指定されていたらfooフィールドがyesと一致(match)した場合に表示します|
+|ListWidget|フィルターを使った繰り返し処理や簡単な分岐のようなことができる&lt;br&gt;内容(content)で書いたことをフィルターの結果(リスト)の各項目に対して繰り返し行う&lt;br&gt;各項目への参照はcurrentTiddlerもしくはvariable属性で指定した変数で行う&lt;br&gt;リストタグやテーブルの行を出力したり&lt;br&gt;フィルターの結果が空なら内容(content)は実行されないため、空でない場合のみアクションを実行するといった簡単な分岐ができる&lt;br&gt;これでリストや表を作る時はWikiTextでは正常に機能しないためHTMLタグを使います|
 |ActionWidgets|表示ではなく動作に関わるウィジェット&lt;br&gt;ButtonWidgetなどと組み合わせてTiddlerやフィールドの処理など色々する。|
-|TranscludeWidget|WikiTextの`{{TextReference}}`の本体&lt;br&gt;WikiTextでうまく行かない時に使う&lt;br&gt;参照先が存在しなかった場合内容(content)が変わりに表示されるため軽い条件分岐のようなこともできる|
+|TranscludeWidget|WikiTextの`{{TextReference}}`の本体&lt;br&gt;WikiTextでうまく行かない時に使うとうまくいく場合がある&lt;br&gt;参照先が存在しなかった場合内容(content)が変わりに表示されるため軽い条件分岐のようなこともできる|
 |MacroCallWidget|`&lt;&lt;マクロ名&gt;&gt;`の本体。同様にうまく行かない時に使う|
 
 !!!!変数
 |VarsWidget|複数の変数に値を設定できる|
-|SetWidget|1つの変数に値を設定できる&lt;br&gt;1つだけな代わりに少しだけ複雑な処理ができる|
+|SetWidget|1つの変数に値を設定できる&lt;br&gt;1つだけな代わりにTextReferenceのTiddlerとField等を別々に指定できたり、指定した値が空だった時に使う値を設定できたりする|
 |WikifyWidget|文字列をtypeで指定したTiddlerのタイプとして処理し、outputで指定した形式で変数に代入する|
+
+Wikifyと他の違いは本文にそのまま出力させるとわかりにくいので&lt;$text text=&quot;&quot;&quot;&lt;$text text=&lt;&lt;変数名&gt;&gt;/&gt;&quot;&quot;&quot;/&gt;のようにするか&lt;$text text=&quot;{{{[&lt;変数名&gt;]}}}&quot;/&gt;のように変数をフィルターで表示するとよい
 
 !!!!文字列処理系
 
-|WikifyWidget|変数で説明。近い機能なのでこちらにも書いておく|
+|WikifyWidget|変数で説明。こちらにも書いておく|
 |TextWidget|文字列をそのまま表示する。TWに処理されたくない時に使う|
 |ViewWidget|上記2つとは異なり文字列でなく指定したTiddlerのフィールドを処理する|
 
@@ -12798,26 +12914,27 @@ HTMLのフォーム系タグ(インプットとかラジオとかチェックボ
 <div creator="seed" modifier="seed" tags="TWのメモ" title="フィルター" wikitoc="show">
 <pre>!!!フィルターとは
 &quot;&quot;&quot;
-条件を指定して該当するTiddlerを検索したり、単純な文字列の処理など色んなことが出来る機能
+条件を指定して該当するTiddlerのタイトルのリストを取得したり、単純な文字列の処理など色んなことが出来る機能
 単体でも使うし、変数に入れたりウィジェットに渡したりなど組み合わせても使う
-色々やるのに避けて通れないが結構ややこしく数も多くて初心者が苦しむ原因になりがち
 
-単純に結果を見るには$:/AdvancedSearchのフィルタ(Filter)に書いたりTiddlerの本文に`{{{フィルター}}}`という書式で書き込む方法などがある
+TWで色々やろうとすると避けて通れないが結構ややこしく種類も多くて初心者が苦しむ原因になりがち
+
+単純にフィルターの結果を見るには$:/AdvancedSearchのフィルタ(Filter)に書いたりTiddlerの本文に`{{{フィルター}}}`という書式で書き込む方法などがある
 &quot;&quot;&quot;
 
 !!!オペレーターとは
 &quot;&quot;&quot;
-オペレーターとはフィルターにて使う色んな処理を行う機能で`[`と`]`の中で書く
+オペレーターとはフィルター内で扱い色んな処理を行う機能を持ったもので`[`と`]`の中で書く
 `[オペレーター]`のように
 
 オペレーターは3つのブロックに別れており、`!(オペレーター名):(suffix)(parameter)`という書式です
 &quot;&quot;&quot;
 
-|&lt;$text text=&quot;!&quot;/&gt;|オペレーターの効果を反転させる場合だけつける&lt;br&gt;ただし、実際の効果はオペレーターの仕様によるし、効果が無いオペレーターもある|
+|&lt;$text text=&quot;!&quot;/&gt;|オペレーターの効果を反転させる場合だけつける&lt;br&gt;ただし、実際の効果はオペレーターの仕様による|
 |(オペレーター名)|オペレーターの名前|
-|(suffix)|オペレーターによって設定されている場合がある2つ目のパラメーター|
-|(parameter)|直接渡す`[値]`、TextReferenceで渡す`{TextReference}`、変数で渡す`&lt;変数名&gt;`の3種類書き方が存在する&lt;br&gt;もちろん囲むのに使っている文字は中で使うことができない&lt;br&gt;regexp[]のように値を渡すのに困るようなら他の2つで渡すようにする&lt;br&gt;他の場所と違って括弧が1個なことに注意|
-|(input)|書式には出てこないが、左のオペレーターの結果(output)が入力(input)となる&lt;br&gt;最初のオペレーターの入力はall[tiddlers]の結果と等価(多分)&lt;br&gt;一部のオペレーターは入力(input)を完全に無視する処理を行う&lt;br&gt;公式で`[regexp:op-input[ignored]]`を使うと調べられる(全部出るかは分からない)|
+|(suffix)|オペレーターによって設定されている場合がある2つ目のパラメーター&lt;br&gt;使わない場合は手前の:ごと省略|
+|(parameter)|直接渡す`[値]`、TextReferenceで渡す`{TextReference}`、変数で渡す`&lt;変数名&gt;`の3種類の書き方が存在する&lt;br&gt;もちろん囲むのに使っている文字は中で使うことができない&lt;br&gt;regexp[]のように値を渡すのに困る場合は他の2つで渡すようにする&lt;br&gt;他の場所と違って括弧が1個なことに注意|
+|(input)|書式には出てこないが、左のオペレーターの結果(output)が入力(input)となる&lt;br&gt;オペレーターは入力(input)を対象に処理を行う&lt;br&gt;最初のオペレーターの入力はall[tiddlers]の結果と等価(多分)&lt;br&gt;一部のオペレーターは入力(input)を完全に無視する処理を行う&lt;br&gt;公式で`[regexp:op-input[ignored]]`を検索すると調べられる(全部出るかは分からない)|
 
 &quot;&quot;&quot;
 オペレーターは入力(input)をsuffixとparameterの指定に従って処理します
@@ -12828,7 +12945,7 @@ HTMLのフォーム系タグ(インプットとかラジオとかチェックボ
 
 !!!オペレーターの組み合わせ
 &quot;&quot;&quot;
-オペレーターは`オペレーター名[]オペレーター名[]`のようにつなげて書くことで左から右の順にどんどん処理していくことができる
+オペレーターは`オペレーター名[]オペレーター名[]`のようにつなげて書くことで左から右の順にどんどん処理して絞り込むことができる
 例えば下記のように書く
 &quot;&quot;&quot;
 
@@ -12837,15 +12954,15 @@ HTMLのフォーム系タグ(インプットとかラジオとかチェックボ
 ```
 
 !!!1つの塊であるFilter Run
-上記`[オペレーター1つないし複数]`や、ただの文字列をダブルクォーテーションまたはシングルクォーテーションで囲んだ物、あるいはただの文字列(スペースや[]を含まない物)をrunと呼ぶ(公式のFilter Run)
+上記`[オペレーター1つないし複数]`や、ただの文字列をダブルクォーテーションまたはシングルクォーテーションで囲んだ物、あるいはただの文字列(スペースや[]を含まない物)を今後の説明ではrunと書く(公式のFilter Run)
 
-!!!更なる組み合わせ
+!!!組み合わせ
 上記runを組み合わせて更に複雑なフィルターを作ることができる
 
-|run1 run2|run1の結果とrun2の結果のどちらかにある物/和集合(run1 or run2)|
-|run1 +run2|run1の結果とrun2の結果の両方にある物/共通部分(run1 and run2)&lt;br&gt;ただ実際にはrun1の結果をrun2に入力として渡して処理させている(多分)&lt;br&gt;なので共通部分になるかはrun2のオペレーターの仕様による|
+|run1 run2|run1の結果とrun2の結果のどちらか(または両方)にある物/和集合(run1 or run2)|
+|run1 +run2|run1の結果とrun2の結果の両方にある物/共通部分(run1 and run2)&lt;br&gt;ただ実際にはrun1の結果をrun2に入力として渡して処理させている(多分)&lt;br&gt;なので共通部分になるかはrun2のオペレーターの仕様による&lt;br&gt;例えばrun2をall[]などの入力を無視するオペレーターで始めた場合は共通部分にならずrun1が無視される|
 |run1 -run2|run1の結果にあってrun2の結果にない物/差集合(run1 and not run2)|
-|run1 ~run2|run1の結果が空のリスト(なし)だった時にrun2が結果になる。run1の結果が空のリストだったらrun2は結果に影響しない|
+|run1 ~run2|run1の結果が空のリスト(なし)だった時にrun2が結果になる。run1の結果が空のリストでない場合はrun2は結果に影響しない|
 
 !!!細かい話
 &quot;&quot;&quot;
@@ -12853,13 +12970,13 @@ HTMLのフォーム系タグ(インプットとかラジオとかチェックボ
 オペレーター名なしで[]とかかれた場合はtitleオペレーターと解釈されます
 field:title[]とtitle[]は別物であることに注意
 
-フィールドオペレーターの方は省略せずフィールドだと明示した方が後から見ても分かりやすいです
+fieldオペレーターの方は省略せずfieldオペレーターだと明示した方が忘れた頃に見ても分かりやすく、万が一後から同名のオペレータが追加されても安心です
 &quot;&quot;&quot;
 
 !!!Filter Operators
 
 &quot;&quot;&quot;
-基本的に処理の対象は入力(input)のみ
+一部の例外を除けば基本的に処理の対象は入力(input)のみ
 []内(parameter)と書いていますがもちろんTextReferenceも変数も使えます
 &quot;&quot;&quot;
 
@@ -12871,14 +12988,14 @@ field:title[]とtitle[]は別物であることに注意
 !!!!フィールド系
 
 |field|suffixに指定したフィールドが[]内(parameter)と一致する物を返す&lt;br&gt;[]内(parameter)が空だった場合、「フィールドが存在しない」または「フィールドは存在するが値が空」なTiddlerを返す|
-|fileds|Tiddlerに含まれるフィールドの一覧を返す|
+|fileds|入力Tiddlerに含まれるフィールドの一覧を返す|
 |has|suffixにfieldを指定したかどうかで挙動が変わる&lt;br&gt;suffixなしの場合&lt;br&gt;[]内(parameter)で指定したフィールドの値が空でないTiddler&lt;br&gt;!オペレーター名[]の場合はフィールドが存在しないか値が空のTiddler&lt;br&gt;&lt;br&gt;suffixがfieldの場合&lt;br&gt;フィールドが存在するTiddler(値が空の場合も含む)&lt;br&gt;!オペレーター名[]の場合はフィールドが存在しないTiddler|
 |get|[]内(parameter)で指定したフィールドの取得|
 
 
 !!!!タグ系
 
-|tags|使われているタグの一覧|
+|tags|使われているタグの一覧。fields[]のtag版|
 |tag|[]内(parameter)で指定したタグのついている物を返す。suffixによって結果が変わる模様|
 |tagging|tag[]と似たような用途で、入力(input)をタグのリストとして扱い、どれかが含まれる物を返す&lt;br&gt;ShadowsTiddlerも検索対象の模様|
 
@@ -12891,7 +13008,7 @@ field:title[]とtitle[]は別物であることに注意
 
 
 !!!!検索
-|search|suffixで指定のフィールド検索&lt;br&gt;5.1.18で大幅拡張されたため、今後はこれに一本化するのかもしれない。書き方もsuffix周りでこれまでにない拡張がなされている|
+|search|suffixで指定のフィールド検索&lt;br&gt;5.1.18で大幅拡張されたため、今後はこれが主流になるのかもしれない。&lt;br&gt;書き方もsuffix周りでこれまでにない拡張がなされている|
 |regexp|suffixで指定のフィールドを正規表現で検索|
 
 
@@ -12905,12 +13022,12 @@ field:title[]とtitle[]は別物であることに注意
 
 &quot;&quot;&quot;
 remove～は元々ついてなかった場合結果から省かれる模様
-filterTestとwidgetが入力の時、removesuffix[Test]とするとfilterのみが結果として返される
+例えばfilterTestとwidgetが入力の時、removesuffix[Test]とするとfilterのみが結果として返される
 &quot;&quot;&quot;
 
 !!!!その他
 |sort|結果の並べ替え。|
-|range|入力(input)は無視される&lt;br&gt;1,2,3,4・・のような常に一定の差の数字のリストを返します&lt;br&gt;リストウィジェット等と組み合わせて使うと便利な場面があるかもしれません|
+|range|入力(input)は無視される&lt;br&gt;1,2,3,4・・とか5,10,15,20・・・などのような数字のリストを出力します&lt;br&gt;リストウィジェット等と組み合わせて使うと便利な場面があるかもしれません|
 
 
 !!!!変換系
@@ -13162,8 +13279,13 @@ TWに標準で用意されているマクロから一部を簡単に紹介
 <pre>!!!公式の重要性(特にReference)
 &quot;&quot;&quot;
 公式を見れば普通に使うのに必要な情報はだいたい分かります
-多くの機能に使用例も書かれています(Examplesとか)
-英語だけど機械翻訳して読んで分かりにくいところを原文で読めば多少楽です
+多くの機能に使用例も書かれています(Examples)
+
+英語だけど機械翻訳して読んで分かりにくいところを原文で読めばかなり楽です
+翻訳でURLを渡す場合は静的HTML版を渡すのが良いです
+例：~https://tiddlywiki.com/static/Reference
+直接入力する場合半角スペースは%2520に置換します
+検索で「キーワード site:tiddlywiki.com/static/」とするのも有効です
 
 日本語の解説サイトを見るにしても、バージョンアップで既存の物が拡張されてたり新しい機能が増えてたりするので公式も見たほうがいいですよ
 &quot;&quot;&quot;
@@ -13207,7 +13329,7 @@ ShadowTiddlerは上書き操作をしても実際には上書きされずにShad
 *基本的に一人で使う用のwikiでオフラインの方が多分主流
 *一般的なwikiとはかなり違うため最初は面食らうかも
 *カスタマイズしやすくする仕組みがある程度用意されている
-*htmlの1ファイルに全てが詰まっており、オフラインならばサーバーは必要ない
+*htmlの1ファイルに全てが詰まっており、オフラインならばサーバーは必要ない(node.js版のように1ファイルでない場合もある)
 
 !!!難点
 *wikiのような差分/履歴機能が標準で存在しない(連携する機能によってはあるかもしれない)
@@ -13222,12 +13344,14 @@ ShadowTiddlerは上書き操作をしても実際には上書きされずにShad
 
 !!!!アドオン等を入れる
 &quot;&quot;&quot;
-そのまま使うと毎度ファイルをダウンロードしていく形になり面倒なのでアドオン等何かしらの補助が必要になる(オンラインはまた別です)
+そのまま使うと毎度ファイルをダウンロードしていく形になり面倒なのでアドオン等何かしらの補助が必要になる(オンラインやサーバー系は別かも)
 ダウンロードの少し下の「PLATFORMS:」で自分の環境にあった物をクリックして良さそうなのをインストールする方が良い
-PCなら以前は「TiddlyFox」(ただし、古いFirefoxのみ対応)、最近なら「Timimi」あたりが良さそう？(試してない)
+PCなら以前は「TiddlyFox」(ただし、古いFirefoxのみ対応)、最近なら「savetiddlers」とか「Timimi」あたり？(試してない)
 
-準備が出来たらhtmlをブラウザで開いて保存ボタン{{$:/core/images/save-button}}で保存が出来てるか確認してください
-ダウンロードになる場合はちゃんと設定できていませんので、アドオンの設定などを確認してください(ブラウザにアドオンのボタンが追加されてないかも)
+準備が出来たらhtmlをブラウザで開いて右側にある{{$:/core/images/new-button}}ボタンを押して新規Tiddlerを作成し、開いた編集画面で{{$:/core/images/done-button}}ボタンを押してTiddlerの編集を確定します
+変更があると保存ボタンの{{$:/core/images/save-button}}が赤くなり、保存されると元の色に戻りますので確認してみてください
+少し(数十秒程度)間をおいても赤いままでボタンを押してもダウンロードになる場合は設定がうまくいってないかもしれません
+htmlを開き直して最近の更新(Recent)タブに作成したTiddlerがなければアドオン等の設定を見直してください(ブラウザ側にアドオンのボタンが追加されたりするのでその確認も)
 &quot;&quot;&quot;
 
 !!!!日本語プラグイン
@@ -13242,16 +13366,17 @@ PCなら以前は「TiddlyFox」(ただし、古いFirefoxのみ対応)、最近
 </pre>
 </div>
 <div creator="seed" modifier="seed" tags="案内" title="表紙" wikitoc="show">
-<pre>!!!このTiddlyWiki(TW)と書いてる人
+<pre>!!!このTiddlyWiki(TW)
 
 &quot;&quot;&quot;
-TW5から始めて結構気に入ってるけどJavaScriptは苦手だから適当に改造してます
-TWがもうちょっと流行ってもっと日本語情報増えて欲しいから少し書いてみた
+TW5から始めました
+WEB系のあれこれは正直苦手なので雑に改造してます
+結構良いソフトだと思ったのでわかる範囲で色々書いてみました
 &quot;&quot;&quot;
 
 !!!TiddlyWikiの解説(みたいなの)
 &quot;&quot;&quot;
-5.1.19時点で書いたけど少し前のバージョンの情報も混ざってるかも(TW5の範囲内で)
+5.1.19時点で書いたけど少しだけ前のバージョンでの情報も混ざってるかもしれません
 誤字脱字、その他間違いあると思うのでおかしいなと思ったら公式で確認を
 &quot;&quot;&quot;
 
@@ -13280,8 +13405,13 @@ $(文字列)$
 ```
 
 !!!!!フィルター
-&lt;$text text=&quot;マクロやウィジェットに渡されてるのが[と]で囲まれてたらだいたいフィルター。
+&lt;$text text=&quot;マクロやウィジェットに渡されたものが[と]で囲まれてたらだいたいはフィルター。
 {{{と}}}の括弧3つずつで囲まれてるのもフィルター&quot;/&gt;
+
+```
+&lt;$foo bar=&quot;[フィルター]&quot;&gt;&lt;/$foo&gt;
+&lt;$foo bar={{{[フィルター]}}}&gt;&lt;/$foo&gt;
+```
 
 !!!!!Transclude
 ```
