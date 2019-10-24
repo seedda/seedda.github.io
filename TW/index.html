@@ -9224,7 +9224,8 @@ Error message and password prompt
 <div status="complete" title="$:/Import">
 <pre>The following tiddlers were imported:
 
-# [[$:/plugins/seed/toc]]</pre>
+# [[フィルター]]
+# [[マクロ]]</pre>
 </div>
 <div title="$:/isEncrypted">
 <pre>no</pre>
@@ -11947,7 +11948,7 @@ $code$
 <div creator="s" modifier="seed" title="$:/status/UserName">
 <pre>seed</pre>
 </div>
-<div list="" title="$:/StoryList">
+<div list="$:/Import 表紙 使い始めるまでに必要そうな知識 最初に TextReference TiddlyWikiの書式(WikiText) TIPS マクロ ウィジェット フィルター Markdown JavaScript プラグイン Node.js版TW" title="$:/StoryList">
 <pre></pre>
 </div>
 <div creator="seed" list="$:/core/ui/SideBar/Open $:/seed/sidebar/toc $:/core/ui/SideBar/Recent $:/core/ui/SideBar/Tools $:/core/ui/SideBar/More" modifier="seed" title="$:/tags/SideBar">
@@ -11969,7 +11970,7 @@ $code$
         },
         &quot;$:/info/url/full&quot;: {
             &quot;title&quot;: &quot;$:/info/url/full&quot;,
-            &quot;text&quot;: &quot;file:///home/seed/%E3%83%80%E3%82%A6%E3%83%B3%E3%83%AD%E3%83%BC%E3%83%89/index.html&quot;
+            &quot;text&quot;: &quot;file:///home/seed/%E9%9B%91%E5%A4%9A/Github/seedda/seedda/TW/index.html&quot;
         },
         &quot;$:/info/url/host&quot;: {
             &quot;title&quot;: &quot;$:/info/url/host&quot;,
@@ -11989,7 +11990,7 @@ $code$
         },
         &quot;$:/info/url/pathname&quot;: {
             &quot;title&quot;: &quot;$:/info/url/pathname&quot;,
-            &quot;text&quot;: &quot;/home/seed/%E3%83%80%E3%82%A6%E3%83%B3%E3%83%AD%E3%83%BC%E3%83%89/index.html&quot;
+            &quot;text&quot;: &quot;/home/seed/%E9%9B%91%E5%A4%9A/Github/seedda/seedda/TW/index.html&quot;
         },
         &quot;$:/info/url/search&quot;: {
             &quot;title&quot;: &quot;$:/info/url/search&quot;,
@@ -12937,16 +12938,22 @@ TWで色々やろうとすると避けて通れないが結構ややこしく種
 |(input)|書式には出てこないが、左のオペレーターの結果(output)が入力(input)となる&lt;br&gt;オペレーターは入力(input)を対象に処理を行う&lt;br&gt;最初のオペレーターの入力はall[tiddlers]の結果と等価(多分)&lt;br&gt;一部のオペレーターは入力(input)を完全に無視する処理を行う&lt;br&gt;公式で`[regexp:op-input[ignored]]`を検索すると調べられる(全部出るかは分からない)|
 
 &quot;&quot;&quot;
-オペレーターは入力(input)をsuffixとparameterの指定に従って処理します
+オペレーターは入力(input)をsuffixとparameterの指定に従って処理し出力(output)します
 ただし上述したように一部に入力(input)を無視する物もあります
 
-また、上述の形式とは少し異なる書き方もできるオペレーターも出てきました(search[])
+結果はリストとして出力(output)され、リストの項目数が0個のものをこのサイトでは`空のリスト`と呼びます(`count[]`をつけると個数が表示されます)
+
+また、上述の形式とは少し異なる書き方もできるオペレーターも出てきました(`search[]`)
 &quot;&quot;&quot;
 
 !!!オペレーターの組み合わせ
 &quot;&quot;&quot;
 オペレーターは`オペレーター名[]オペレーター名[]`のようにつなげて書くことで左から右の順にどんどん処理して絞り込むことができる
 例えば下記のように書く
+
+これは左のリストの出力(output)を右のリストの入力(input)として扱い、左から順番に処理されていきます
+また、一番最初のオペレーターは`[all[tiddlers]]`の出力(output)が入力(input)されたものとして扱われます
+
 &quot;&quot;&quot;
 
 ```
@@ -13012,7 +13019,8 @@ fieldオペレーターの方は省略せずfieldオペレーターだと明示�
 |regexp|suffixで指定のフィールドを正規表現で検索|
 
 
-!!!!接辞(先頭、末尾)
+!!!!文字列操作
+!!!!!接辞(先頭、末尾)
 |prefix|[]内(parameter)から始まる入力(input)を返す|
 |suffix|[]内(parameter)で終わる入力(input)を返す|
 |addprefix|入力(input)のそれぞれの先頭に[]内(parameter)を付け加えた物を返す|
@@ -13023,6 +13031,93 @@ fieldオペレーターの方は省略せずfieldオペレーターだと明示�
 &quot;&quot;&quot;
 remove～は元々ついてなかった場合結果から省かれる模様
 例えばfilterTestとwidgetが入力の時、removesuffix[Test]とするとfilterのみが結果として返される
+&quot;&quot;&quot;
+
+
+!!!!!5.1.20〜
+|match|フィールドではなく入力(input)自体を絞り込む。suffixはフラグを1つないし`,`で区切って複数指定可能で、現時点では`caseinsensitive`を指定すると大文字小文字を区別しない絞り込みが可能|
+|length|入力(input)の各項目の文字列の長さをリストで返す|
+|uppercase|入力(input)の各項目の文字列を大文字にしてリストで返す|
+|lowercase|入力(input)の各項目の文字列を小文字にしてリストで返す|
+|titlecase|入力(input)の各項目の単語の先頭を大文字にしてリストで返す。先頭以外は小文字にしたい場合は先にlowercase[]を使う|
+|sentencecase|入力(input)の各項目の文字列の先頭を大文字にしてリストで返す。先頭以外は小文字にしたい場合は先にlowercase[]を使う|
+|trim|入力(input)の各項目の文字列から先頭と末尾の空白を削除してリストで返す|
+|split|入力(input)の各項目に対して[]内(parameter)を区切り文字として分割した結果をリストで返す|
+|splitregexp|上記splitを正規表現を利用して行う。suffixにi(大文字小文字を区別しない)やm(複数行モード)を指定可能で、特に区切り文字は必要ないはず|
+|join|入力(input)の各項目を[]内(parameter)で繋いで返すaとbとcの3項目のリストに対して,をつなぎに指定するとa,b,cという感じ|
+
+splitは場合によっては出力(output)に空の項目を含む場合があり、これを削除したい場合は`!is[blank]`を使う
+
+
+
+
+!!!!数学系フィルター
+
+&quot;&quot;&quot;
+2.1.20から数学系のフィルターが実装されました。evalプラグインでも良いと思いますが、標準でついているので少し書きます
+
+リストの各項目に対する基本ルール
+&quot;&quot;&quot;
+
+* 数字以外の文字は無視される(例：200cm =&gt; 200, 800px =&gt; 800)
+* Infinityと-Infinityはそれぞれ正と負の無限大として扱う
+* 上記ルールで解釈できなければ0として扱う(例：foo =&gt; 0)
+
+&quot;&quot;&quot;
+一部のオペレーターは数学系の処理には都合の悪い処理を行います
+例えばリストに重複した項目を追加しようとした場合に追加するのでなく位置を後ろに変更し、項目の数を増やしません
+この重複項目に対する処理は先頭に`=`をつけることで無効化できます
+
+オペレーターは大きく分けて2種類あり、入力されたリストの項目数と同じ項目数を返すものと1つの項目だけを返すものがあります
+前者はそれぞれの項目を個別に処理した結果を、後者は全ての項目を使った処理の結果を返します
+
+どれも入力(input)は使うため、以下の表では省略し、リストで返すものはリストで返す、1つの項目で返すものは単に返す、と表記する
+
+&quot;&quot;&quot;
+
+!!!!!端数処理
+
+|ceil|切り上げた結果をリストで返す|
+|round|四捨五入した結果をリストで返す|
+|floor|切り捨てた結果をリストで返す|
+|trunc|0に近い方の整数に丸めた結果をリストで返す|
+|untrunc|0から遠い方の整数に丸めた結果をリストで返す|
+
+!!!!!四則演算
+|add|[]内(parameter)を加算した結果をリストで返す|
+|subtract|[]内(parameter)で減算した結果をリストで返す|
+|multiply|[]内(parameter)で乗算した結果をリストで返す|
+|divide|[]内(parameter)で除算した結果をリストで返す|
+|remainder|[]内(parameter)で除算した余りをリストで返す|
+|sum|全ての項目を加算した結果を返す|
+|product|全ての項目を乗算した結果を返す|
+
+!!!!!最大/最小
+|max|[]内(parameter)と比較して大きい方の数字をリストで返す|
+|min|[]内(parameter)と比較して小さい方の数字をリストで返す|
+|maxall|最も大きい数字を返す|
+|minall|最も小さい数字を返す|
+
+
+!!!!!表記
+|exponential|[]内(parameter)で指定した桁数で指数表記しリストで返す|
+|fixed|[]内(parameter)で指定した桁数で丸めた結果をリストで返す|
+|precision|[]内(parameter)で指定した桁数でexponential[]とfixed[]の結果がより短い方をリストで返す？|
+
+!!!!!その他
+|abs|絶対値をリストで返す|
+|negate|正負を反転させた結果(-1を乗算した結果)をリストで返す|
+|sign|負なら-1、0なら0、正なら1をリストで返す|
+
+
+!!!!条件分岐
+
+|then|5.1.20〜。入力(input)が空のリストでない場合に入力(input)と同じ個数の[]内(parameter)をリストとして返し、そうでない場合はそのまま空のリストを返します(5.1.21時点)|
+|else|5.1.20〜。入力(input)が空のリストだった場合に[]内(parameter)を返し、そうでない場合はそのまま入力(input)を返します|
+
+&quot;&quot;&quot;
+thenとelseはこの順番で組み合わせて使うことで条件分岐のように使うことができます
+また、elseは空のリストの時値を置き換えるのでデフォルト値を指定する場合にも使うことができます
 &quot;&quot;&quot;
 
 !!!!その他
@@ -13154,7 +13249,7 @@ JavaScriptで定義することも出来ますが、ここでは扱いません
 |書式|対象|挙動|h
 |`$引数名$`|マクロで定義した引数に渡された値|渡された文字列に置換します|
 |`$(変数名)$`|マクロの外で定義された変数やマクロ|結果の文字列に置換します|
-|`&lt;&lt;_引数名_&gt;&gt;`|マクロで定義した引数に渡された値|呼び出し|
+|`&lt;&lt;__引数名__&gt;&gt;`|マクロで定義した引数に渡された値|呼び出し|
 |`&lt;&lt;変数名&gt;&gt;`|マクロの外で定義された変数やマクロ|呼び出し|
 
 &quot;&quot;&quot;
