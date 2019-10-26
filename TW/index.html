@@ -9224,8 +9224,7 @@ Error message and password prompt
 <div status="complete" title="$:/Import">
 <pre>The following tiddlers were imported:
 
-# [[フィルター]]
-# [[マクロ]]</pre>
+# [[フィルター]]</pre>
 </div>
 <div title="$:/isEncrypted">
 <pre>no</pre>
@@ -11970,7 +11969,7 @@ $code$
         },
         &quot;$:/info/url/full&quot;: {
             &quot;title&quot;: &quot;$:/info/url/full&quot;,
-            &quot;text&quot;: &quot;file:///home/seed/%E9%9B%91%E5%A4%9A/Github/seedda/seedda/TW/index.html&quot;
+            &quot;text&quot;: &quot;file:///home/seed/%E3%83%80%E3%82%A6%E3%83%B3%E3%83%AD%E3%83%BC%E3%83%89/index.html&quot;
         },
         &quot;$:/info/url/host&quot;: {
             &quot;title&quot;: &quot;$:/info/url/host&quot;,
@@ -11990,7 +11989,7 @@ $code$
         },
         &quot;$:/info/url/pathname&quot;: {
             &quot;title&quot;: &quot;$:/info/url/pathname&quot;,
-            &quot;text&quot;: &quot;/home/seed/%E9%9B%91%E5%A4%9A/Github/seedda/seedda/TW/index.html&quot;
+            &quot;text&quot;: &quot;/home/seed/%E3%83%80%E3%82%A6%E3%83%B3%E3%83%AD%E3%83%BC%E3%83%89/index.html&quot;
         },
         &quot;$:/info/url/search&quot;: {
             &quot;title&quot;: &quot;$:/info/url/search&quot;,
@@ -13066,7 +13065,9 @@ splitは場合によっては出力(output)に空の項目を含む場合があ�
 &quot;&quot;&quot;
 一部のオペレーターは数学系の処理には都合の悪い処理を行います
 例えばリストに重複した項目を追加しようとした場合に追加するのでなく位置を後ろに変更し、項目の数を増やしません
-この重複項目に対する処理は先頭に`=`をつけることで無効化できます
+この重複項目に対する処理は先頭に`=`をつけることで無効化できます(例：`=1 =1 =1 +[sum[]]`)
+また、split[]を使うこともできます(例：`[[1,1,1]split[,]sum[]]`)
+
 
 オペレーターは大きく分けて2種類あり、入力されたリストの項目数と同じ項目数を返すものと1つの項目だけを返すものがあります
 前者はそれぞれの項目を個別に処理した結果を、後者は全ての項目を使った処理の結果を返します
